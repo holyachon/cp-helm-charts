@@ -79,3 +79,30 @@ Default GroupId to Release Name but allow it to be overridden
 {{- .Release.Name -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Default Topic Names to Release Name but allow it to be overridden
+*/}}
+{{- define "cp-kafka-connect.configStorageTopic" -}}
+{{- if .Values.overrideConfigStorageTopic -}}
+{{- .Values.overrideConfigStorageTopic -}}
+{{- else -}}
+{{ template "cp-kafka-connect.fullname" . }}-config
+{{- end -}}
+{{- end -}}
+
+{{- define "cp-kafka-connect.offsetStorageTopic" -}}
+{{- if .Values.overrideOffsetStorageTopic -}}
+{{- .Values.overrideOffsetStorageTopic -}}
+{{- else -}}
+{{ template "cp-kafka-connect.fullname" . }}-offset
+{{- end -}}
+{{- end -}}
+
+{{- define "cp-kafka-connect.statusStorageTopic" -}}
+{{- if .Values.overrideStatusStorageTopic -}}
+{{- .Values.overrideStatusStorageTopic -}}
+{{- else -}}
+{{ template "cp-kafka-connect.fullname" . }}-status
+{{- end -}}
+{{- end -}}

@@ -18,13 +18,13 @@ helm package .
 RET=$?
 
 if [[ "${RET}" == 0 ]]; then
-    helm repo index .
-
     echo -e "Copying chart packages and index to docs ${RS}"
     # rm -f docs/*.tgz
     rm -f docs/*.yaml
     mv ./*.tgz docs/
     mv ./index.yaml docs/
+
+    cd docs && helm repo index .
 
     echo -e "${BLUE} Now commit and push charts and docs! ${RS}"
 else

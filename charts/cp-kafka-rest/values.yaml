@@ -76,10 +76,24 @@ prometheus:
     imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
     imagePullPolicy: IfNotPresent
     port: 5556
+    rules:
+    - pattern : 'kafka.rest<type=jetty-metrics>([^:]+):'
+      name: "cp_kafka_rest_jetty_metrics_$1"
+    - pattern : 'kafka.rest<type=jersey-metrics>([^:]+):'
+      name: "cp_kafka_rest_jersey_metrics_$1"
 
     ## Resources configuration for the JMX exporter container.
     ## See the `resources` documentation above for details.
     resources: {}
+
+    whitelistObjectNames:
+      - kafka.rest:type=jetty-metrics
+      - kafka.rest:type=jersey-metrics
+    rules: |
+      - pattern : 'kafka.rest<type=jetty-metrics>([^:]+):'
+        name: "cp_kafka_rest_jetty_metrics_$1"
+      - pattern : 'kafka.rest<type=jersey-metrics>([^:]+):'
+        name: "cp_kafka_rest_jersey_metrics_$1"
 
 ## External Access
 ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer

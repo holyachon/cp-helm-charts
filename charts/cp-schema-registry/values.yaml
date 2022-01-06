@@ -94,5 +94,24 @@ prometheus:
     imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
     imagePullPolicy: IfNotPresent
     port: 5556
+    rules:
+    - pattern : 'kafka.schema.registry<type=jetty-metrics>([^:]+):'
+      name: "cp_kafka_schema_registry_jetty_metrics_$1"
+    - pattern : 'kafka.schema.registry<type=master-slave-role>([^:]+):'
+      name: "cp_kafka_schema_registry_master_slave_role"
+    - pattern : 'kafka.schema.registry<type=jersey-metrics>([^:]+):'
+      name: "cp_kafka_schema_registry_jersey_metrics_$1"
 
     resources: {}
+
+    whitelistObjectNames:
+      - kafka.schema.registry:type=jetty-metrics
+      - kafka.schema.registry:type=master-slave-role
+      - kafka.schema.registry:type=jersey-metrics
+    rules: |
+      - pattern: 'kafka.schema.registry<type=jetty-metrics>([^:]+):'
+        name: "cp_kafka_schema_registry_jetty_metrics_$1"
+      - pattern: 'kafka.schema.registry<type=master-slave-role>([^:]+):'
+        name: "cp_kafka_schema_registry_master_slave_role"
+      - pattern: 'kafka.schema.registry<type=jersey-metrics>([^:]+):'
+        name: "cp_kafka_schema_registry_jersey_metrics_$1"

@@ -67,10 +67,19 @@ prometheus:
     imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
     imagePullPolicy: IfNotPresent
     port: 5556
+    rules:
+    - pattern : 'io.confluent.ksql.metrics<type=ksql-engine-query-stats>([^:]+):'
+      name: "cp_ksql_server_metrics_$1"
 
     ## Resources configuration for the JMX exporter container.
     ## See the `resources` documentation above for details.
     resources: {}
+
+    whitelistObjectNames:
+      - io.confluent.ksql.metrics:type=ksql-engine-query-stats
+    rules: |
+      - pattern: 'io.confluent.ksql.metrics<type=ksql-engine-query-stats>([^:]+):'
+        name: "cp_ksql_server_metrics_$1"
 
 ## External Access
 ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer

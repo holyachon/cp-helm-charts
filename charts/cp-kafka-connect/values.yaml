@@ -86,10 +86,39 @@ prometheus:
     imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
     imagePullPolicy: IfNotPresent
     port: 5556
+    rules:
+    - pattern : "kafka.connect<type=connect-worker-metrics>([^:]+):"
+      name: "cp_kafka_connect_connect_worker_metrics_$1"
+    - pattern : "kafka.connect<type=connect-metrics, client-id=([^:]+)><>([^:]+)"
+      name: "cp_kafka_connect_connect_metrics_$1_$2"
+    - pattern : "kafka.connect<type=connector-task-metrics, connector=([^:]+), task=([^:]+)><>status: ([^:]+)"
+      name: "cp_kafka_connect_connect_connector_metrics"
+      value: 1
+      labels:
+        connector: $1
+        task: $2
+        status: $3
 
     ## Resources configuration for the JMX exporter container.
     ## See the `resources` documentation above for details.
     resources: {}
+
+    whitelistObjectNames:
+      - kafka.connect:type=connect-worker-metrics
+      - kafka.connect:type=connect-metrics,client-id=*
+      - kafka.connect:type=connector-task-metrics,connector=*,task=*
+    rules: |
+      - pattern: "kafka.connect<type=connect-worker-metrics>([^:]+):"
+        name: "cp_kafka_connect_connect_worker_metrics_$1"
+      - pattern: "kafka.connect<type=connect-metrics, client-id=([^:]+)><>([^:]+)"
+        name: "cp_kafka_connect_connect_metrics_$1_$2"
+      - pattern: "kafka.connect<type=connector-task-metrics, connector=([^:]+), task=([^:]+)><>status: ([^:]+)"
+        name: "cp_kafka_connect_connect_connector_metrics"
+        value: 1
+        labels:
+          connector: $1
+          task: $2
+          status: $3
 
 ## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
 ## bootstrapServers: "PLAINTEXT://dozing-prawn-kafka-headless:9092"
